@@ -1,7 +1,8 @@
-import {Request,Response, NextFunction, Router } from "express";
+import { Router } from "express";
 import bcrypt from "bcrypt";
 import UserModel from "../db";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import userAuth from "../middleware/userAuth";
 const userRouter = Router();
 
 userRouter.post("/signup", async (req,res) => {
@@ -43,19 +44,7 @@ userRouter.post("/signin", async (req,res) => {
     })
 });
 
-const userAuth = (req : Request ,res : Response ,next :NextFunction ) =>  {
-    const token = req.headers["token"];
-    if (!process.env.USER_JWT_SECRET) {
-        throw new Error("user jwt secret not provided");
-    }
-    const decodedData = jwt.verify(token as string,process.env.USER_JWT_SECRET) as JwtPayload;
-    if(!decodedData){
-        res.send({message : "Authorization Failed"})
-        return;
-    }
-    req.id = decodedData.id;
-    next();
-}
+
 userRouter.get("/me",userAuth,(req,res) => {
     const userId = req.id;
     res.send(`hello user ${userId} `)
