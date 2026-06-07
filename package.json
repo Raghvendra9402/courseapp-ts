@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build" : "npx tsc -b",
     "dev": "npx tsc -b && node ./dist/index.js"
   },
   "keywords": [],
